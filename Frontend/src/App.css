@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components; 
+@tailwind utilities;
+
+html,body{
+    overflow-x: hidden;
+    
+}
+.homepage_bg{
+    background-image: url("../src/assets/Images/bghome.svg");
+}
+
+.codeblock1{
+    border-radius: 100%;
+    /* -webkit-filter: blur(34px); */
+    filter: blur(34px);
+    height: 257.05px;
+    left: calc(50% - 263.005px);
+    opacity: .2;
+    top: calc(50% - 175.995px);
+    /* -webkit-transform: matrix(1, 0, -.03, 1, 0, 0);
+    transform: matrix(1, 0, -.03, 1, 0, 0); */
+    width: 372.95px;
+    /* background-color: red; */
+}
+.spinner {
+    --d: 24.6px;
+    width: 4.5px;
+    height: 4.5px;
+    border-radius: 50%;
+    color: #474bff;
+    box-shadow: calc(1*var(--d))      calc(0*var(--d))     0 0,
+           calc(0.707*var(--d))  calc(0.707*var(--d)) 0 1.1px,
+           calc(0*var(--d))      calc(1*var(--d))     0 2.2px,
+           calc(-0.707*var(--d)) calc(0.707*var(--d)) 0 3.4px,
+           calc(-1*var(--d))     calc(0*var(--d))     0 4.5px,
+           calc(-0.707*var(--d)) calc(-0.707*var(--d))0 5.6px,
+           calc(0*var(--d))      calc(-1*var(--d))    0 6.7px;
+    animation: spinner-a90wxe 1s infinite steps(8);
+ }
+ 
+ @keyframes spinner-a90wxe {
+    100% {
+       transform: rotate(1turn);
+    }
+ }
