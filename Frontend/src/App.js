@@ -23,6 +23,7 @@ import AddCourse from "./components/core/Dashboard/AddCourse/AddCourse"
 import MyCourses from "./components/core/Dashboard/MyCourses";
 import EditCourse from "./components/core/Dashboard/EditCourse/EditCourse";
 import Catalog from "./pages/Catalog";
+import CourseDetails from "./pages/CourseDetails";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="catalog/:catalogName" element={<Catalog/>}/>
+        <Route path="courses/:courseId" element={<CourseDetails/>}/>
         <Route path="signup" element={<OpenRoute><SignupPage/></OpenRoute>}/>
         <Route path="login" element={<OpenRoute><LoginPage/></OpenRoute>}/>
         <Route path="forgot-Password" element={<OpenRoute><ForgetPassword/></OpenRoute>}/>
@@ -77,3 +79,5 @@ function App() {
 }
 
 export default App;
+
+// http://localhost:3000/courses/6836958b5db3379ada0478fb
