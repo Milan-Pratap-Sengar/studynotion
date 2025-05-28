@@ -7,14 +7,24 @@ import { Provider } from "react-redux";
 import { store } from "./redux/Store";
 import { Toaster } from "react-hot-toast";
 
+// const root = ReactDOM.createRoot(document.getElementById("root"));
+// root.render(
+//   <React.StrictMode>
+//     <Provider store={store}>
+//       <BrowserRouter>
+//         <App />
+//         <Toaster/>
+//       </BrowserRouter>
+//     </Provider>
+//   </React.StrictMode>
+// );
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <App />
-        <Toaster/>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+      <Toaster />
+    </BrowserRouter>
+  </Provider>
 );

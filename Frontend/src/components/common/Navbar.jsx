@@ -5,7 +5,10 @@ import { useSelector } from "react-redux";
 import { BsCart4 } from "react-icons/bs";
 import ProfileDropDown from "../core/Auth/ProfileDropDown";
 import { IoMdArrowDropdownCircle } from "react-icons/io";
-
+import { useEffect, useState } from "react";
+import { apiConnector } from "../../services/apiConnector";
+import { categories } from "../../services/apis";
+import { BsChevronDown } from "react-icons/bs"
 
 function Navbar(){
 
@@ -13,39 +16,38 @@ function Navbar(){
     const {totalItems} = useSelector( (state) => state.cart )
     const {user} = useSelector( (state) => state.profile)
 
+    const [subLinks,setSubLinks]=useState([])
+    const [loading,setLoading]=useState(false)
+
     const location=useLocation();
+
+
+
     function matchRoute(currentRoute){
         return matchPath({path:currentRoute}, location.pathname)
     }   
 
-    // const [subLinks,setSubLinks]=useState([]);
-
-    // const fetchSubLinks =   async () =>{
-    //     try{
-    //         const result= await apiConnector("GET", categories.CATEGORIES_API)
-    //         console.log("Printing subLinks :-", result)
-    //     }
-    //     catch(err){
-    //         console.log("Something went wrong while fetching the Catalogue");
-    //     }
-    // }
-
-    // useEffect( () => {
-    //     fetchSubLinks();
-    // }, [] )
-
-
-    const subLinks=[
-        {
-            title:"Python",
-            link:"/catalog/python"
-        },
-        {
-            title:"Web Development",
-            link:"/catalog/web-development"
+    const getCategories=async()=>{
+        setLoading(true)
+        try{
+            const response=await apiConnector("GET", categories.CATEGORIES_API)
+            console.log("GET CATEGORIES API RESPONSE............", response.data.categories)
+            if (!response) {
+                throw new Error("Could not fetch Categories.")
+            }
+            setSubLinks(response.data.categories)
         }
-    ]
+        catch(error){
+            console.log("GET CATEGORIES API ERROR...............", error)
+        }
+        setLoading(false)
+    }
 
+    useEffect(()=>{
+        getCategories()
+    },[])
+
+    console.log(subLinks)
 
     return (
         <div className="flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700">
@@ -67,34 +69,31 @@ function Navbar(){
                                         {
                                             link.title === 'Catalog' ?
                                             (
-                                                <div className="relative flex gap-2 items-center group">
-                                                    <p>{link.title}</p>
-                                                    <IoMdArrowDropdownCircle/>
-
-                                                    <div className="invisible absolute left-[50%] top-[50%] flex flex-col translate-x-[-50%] translate-y-[20%] rounded-md bg-richblue-5 p-4 text-richblack-900 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 lg:w-[300px]">
-                                                        <div className="absolute left-[50%] top-0 translate-x-[80%] translate-y-[-35%] h-6 w-6 rotate-45 rounded bg-richblack-5"></div>
-
-                                                        {
-                                                            subLinks.length === 0 ? 
-                                                            (
-                                                                <div>
-                                                                        Loading
-                                                                </div>
-                                                            ) :
-                                                            (
-                                                                subLinks.map( (subLinks, index) =>{
-                                                                    return(
-                                                                        <Link className="my-0.5" to={`${subLinks.link}`} key={index}>
-                                                                            <div className=" p-3 hover:bg-richblack-50 cursor-pointer  w-full rounded-md">
-                                                                                <p className="cursor-pointer">{subLinks.title}</p>
-                                                                            </div>
-                                                                        </Link>
-                                                                    )
-                                                                } )
-                                                            )
-                                                        }
-                                                    </div>                                             
-                                                </div>
+                                                <>
+                                                    <div className={`group relative flex cursor-pointer items-center gap-1 ${ matchRoute("/catalog/:catalogName") ? "text-yellow-25" : "text-richblack-25"}`}>
+                                                        <p>{link.title}</p>
+                                                        <BsChevronDown />
+                                                        <div className="invisible absolute left-[50%] top-[50%] z-[1000] flex w-[200px] translate-x-[-50%] translate-y-[3em] flex-col rounded-lg bg-richblack-5 p-4 text-richblack-900 opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100 lg:w-[300px]">
+                                                            <div className="absolute left-[50%] top-0 -z-10 h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-richblack-5"></div>
+                                                            {
+                                                                loading ? 
+                                                                (<p className="text-center">Loading...</p>) :
+                                                                subLinks.length ? (
+                                                                    <>
+                                                                        {
+                                                                            subLinks?.filter((subLink) => subLink?.courses?.length > 0)?.map((subLink, i) => (
+                                                                                <Link to={`/catalog/${subLink.name.split(" ").join("-").toLowerCase()}`} className="rounded-lg bg-transparent py-4 pl-4 hover:bg-richblack-50" key={i}>
+                                                                                    <p>{subLink.name}</p>
+                                                                                </Link>
+                                                                            ))
+                                                                        }
+                                                                    </>
+                                                                ) :
+                                                                (<p className="text-center">No Courses Found</p>)
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </>
                                             ) :
                                             (
                                                 <NavLink to={link?.path}>
@@ -158,3 +157,4 @@ function Navbar(){
 }
 
 export default Navbar;
+

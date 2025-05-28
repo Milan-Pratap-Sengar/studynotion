@@ -25,7 +25,7 @@
 // missing routes in backend :- sendPaymentSuccessEmail, editCourse, getInstructorCourses, deleteCourse, getFullCourseDetails, updateCourseProgress, reach/contact
 
 
-
+// REACT_APP_BASE_URL= http://localhost:4000/api/v1   {it is nothing but backend route path}
 
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;

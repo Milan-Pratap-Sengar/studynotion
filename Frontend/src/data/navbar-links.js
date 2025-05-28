@@ -1,4 +1,4 @@
-const NavbarLinks = [
+const  NavbarLinks = [
   {
     title: "Home",
     path: "/",

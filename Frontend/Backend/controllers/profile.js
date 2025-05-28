@@ -12,12 +12,14 @@ exports.updateProfile=async (req, res)=>{
         // step 1 : fetch the data
         const {dateOfBirth="",about="",contactNumber,gender}=req.body
         const id=req.user.id
+        console.log(id);
+        console.log("the data is  "+ dateOfBirth+"   "+about+"   "+contactNumber+"   "+gender)
 
         // step 2 : validate the data
-        if(!contactNumber || !gender || !id){
+        if(!id){
             return res.status(400).json({
                 success:false,
-                message:"All fields are required"
+                message:"User ID not found"
             })
         }
 
@@ -91,7 +93,7 @@ exports.deleteAccount=async (req,res)=>{
     }
     catch(err){
         console.log(err)
-        return res.status.json({
+        return res.status(400).json({
             success:false,
             err:err.message,
             message:"Something went wrong while deleting account.Please try again later"
@@ -175,6 +177,7 @@ exports.updateDisplayPicture = async (req, res) => {
 
 exports.getEnrolledCourses = async (req, res) => {
     try {
+        console.log("Enrolled courses are here")
         // step 1 : fetch the user id
         const userId = req.user.id
 

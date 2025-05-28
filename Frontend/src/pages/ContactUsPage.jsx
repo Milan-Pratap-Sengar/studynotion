@@ -12,23 +12,23 @@ function ContactUsPage(){
         {
             heading:"Chat on us",
             p1:"Our friendly team is here to help.",
-            p2:"info@studynotion.com"
+            p2:"milanpratap1407@gmail.com"
         },
         {
             heading:"Visit us",
             p1:"Come and say hello at our office HQ.",
-            p2:"Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016"
+            p2:"Haivatpur Road, Sirsaganj, Firozabad-283151"
         },
         {
             heading:"Call us",
             p1:"Mon - Fri From 8am to 5pm",
-            p2:"+123 456 7869"
+            p2:"6397697079"
         }
     ]
 
     return (
         <div>
-            <div className="mx-auto  mt-20 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white lg:flex-row mb-40" >
+            <div className=" mx-auto  mt-20 flex w-11/12 max-w-maxContent flex-col justify-between gap-10 text-white lg:flex-row mb-40" >
 
                 {/* left box */}
                 <div className="flex flex-col gap-6 rounded-xl bg-richblack-800 p-4 lg:p-6 h-[20%]">

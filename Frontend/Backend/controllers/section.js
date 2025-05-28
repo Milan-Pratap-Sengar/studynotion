@@ -1,6 +1,6 @@
 const section=require("../models/section")
 const course=require("../models/course")
-
+const subsection=require("../models/subsection")
 // **********************************************************************************************************************************************************************
 //                                                                      create section controller
 // **********************************************************************************************************************************************************************
@@ -57,24 +57,34 @@ exports.createSection=async (req,res)=>{
 exports.updateSection=async (req,res)=>{
     try{
         // step 1 : fetch new data
-        const {sectionName, sectionId}=req.body // new name of the section and the ID of the section whose name is to be updated.
+        const {sectionName, sectionId,courseId}=req.body // new name of the section and the ID of the section whose name is to be updated.
 
+        console.log("The content are", sectionName,sectionId,courseId)
         // step 2 : validate the data
-        if(!sectionName || !sectionId){
+        if(!sectionName || !sectionId || !courseId){
             return res.status(400).json({
                 success:false,
                 message:"All fields are required"
             })
         }
 
+        const Section = await section.findByIdAndUpdate(sectionId, { sectionName }, { new: true } );
+
         // step 3 : update a section
-        const Section=await section.findByIdAndUpdate(sectionId,{sectionName:sectionName }, {new:true})
+        const Course=await course.findById(courseId).populate({
+            path:"courseContent",
+            populate:{
+                path:"subsection"
+            }
+        })
+        .exec()
 
         // step 4 : return response
         return res.status(200).json({
             success:true,
-            Section ,
-            message:"Section updated successfully"
+            data:Course ,
+            message:Section,
+            Output:"Section updated successfully"
         })
 
     }
@@ -96,8 +106,8 @@ exports.updateSection=async (req,res)=>{
 
 exports.deleteSection=async (req,res)=>{
     try{
-        // step 1 : fetch the ID of the section you want to delete :- we are assuming that we are sending ID in params(i.e.URL)
-        const {courseId,sectionId}=req.params;
+        // step 1 : fetch the ID of the section you want to delete
+        const {courseId,sectionId}=req.body;
         console.log("The course Id and Section Id are:- ",courseId,sectionId)
         // step 2 : validate the input data
         if(!courseId || !sectionId){
@@ -124,15 +134,28 @@ exports.deleteSection=async (req,res)=>{
         }
 
         // step 4 : remove/unlink the section from its parent course {do we need to remove it from the course also(i.e unlink/detach it with the course)}
-        await course.findByIdAndUpdate(courseId,{$pull:{section:sectionId}})
+        await course.findByIdAndUpdate(courseId,{$pull:{courseContent:sectionId}})
 
         // step 2 : delete a section
         await section.findByIdAndDelete(sectionId)
+
+        //delete sub section
+		await subsection.deleteMany({_id: {$in: section.subsection}});
+
+        //find the updated course and return 
+		const Course = await course.findById(courseId).populate({
+			path:"courseContent",
+			populate: {
+				path: "subsection"
+			}
+		})
+		.exec();
         
         // step 4 : return response
         return res.status(200).json({
             success:true,
             section ,
+            data:Course,
             message:"Section deleted successfully"
         })
 

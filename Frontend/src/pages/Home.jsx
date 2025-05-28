@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { FaArrowRightLong } from "react-icons/fa6";
 import HighlightText from "../components/core/homepage/HighlightText";
 import CTAbutton from "../components/core/homepage/CTAbutton";
@@ -20,14 +20,14 @@ function Home(){
             <div className="relative mb-[70px] mx-auto  flex flex-col w-11/12 items-center justify-between text-white max-w-maxContent">
 
                 {/* **************** Introduction section ************ */}
-                <NavLink to={"/signup"} className="mt-16">
+                <Link to={"/signup"} className="mt-16">
                     <div className="group p-1  mx-auto rounded-full drop-shadow-[0_1.5px_rgba(255,255,255,0.25)] hover:drop-shadow-none bg-richblack-800 font-bold text-richblack-200 transition-all duration-200 hover:scale-95 w-fit">
                         <div className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px] transition-all duration-200 group-hover:bg-richblack-900 ">
                             <p className="cursor-pointer">Become an Instructor</p>
                             <FaArrowRightLong />
                         </div>
                     </div>
-                </NavLink>
+                </Link>
 
                 <div className="text-center font-semibold text-[35px] mt-7">
                     Empower Your Future with <HighlightText text={"Coding Skills"}/>

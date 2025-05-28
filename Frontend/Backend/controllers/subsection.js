@@ -11,11 +11,11 @@ require("dotenv").config();
 // **********************************************************************************************************************************************************************
 
 exports.createSubsection=async(req,res)=>{
-    try{
+    try{        
         // step 1 : fetch the required data for subsection
         const {title, description, sectionId}=req.body;
-        const video=req.files.videoFile
-
+        const video=req.files.video
+        console.log(title,description,sectionId,video)
         // step 2 : validate the data
         if(!title || !description || !sectionId || !video){
             return res.status(400).json({
@@ -37,7 +37,7 @@ exports.createSubsection=async(req,res)=>{
         // step 6 : return response
         return res.status(200).json({
             success:true,
-            updatedSection,
+            data:updatedSection,
             message:"Subsection created successfully"
         })
     }
@@ -59,10 +59,17 @@ exports.createSubsection=async(req,res)=>{
 exports.updateSubsection=async (req,res)=>{
     try{
         // step 1 : fetch the subsection ID whose data to be updated along with new data
-        const {subsectionId,title,description}=req.body;
+        const {sectionId,subsectionId,title,description}=req.body;
+        console.log(sectionId,subsectionId,title,description);
         const Subsection=await subsection.findById(subsectionId)
 
         // step 2 : validate the data
+        if(!sectionId || !subsectionId || !title || !description){
+            return res.status(400).json({
+                success:false,
+                message:"All fields are required"
+            })
+        }
         if(!Subsection){
             return res.status(404).json({
                 success:"false",
@@ -76,8 +83,8 @@ exports.updateSubsection=async (req,res)=>{
         if(description!==undefined){
             Subsection.description=description;
         }
-        if(req.files && req.files.videoFile !==undefined){
-            const video=req.files.videoFile
+        if(req.files && req.files.video !==undefined){
+            const video=req.files.video
             const uploadDetails=await uploadImageToCloudinary(video,process.env.FOLDER_NAME)
             Subsection.videoURL=uploadDetails.secure_url
             Subsection.timeDuration=`${uploadDetails.duration}`
@@ -86,9 +93,13 @@ exports.updateSubsection=async (req,res)=>{
         // step 3 : update the subsection
         await Subsection.save()
 
+        // step 4 : find updated section data after updating its subsection
+        const updatedSection=await section.findById(sectionId).populate("subsection")
+
         // step 4 : return response
         return res.status(200).json({
             success:true,
+            data:updatedSection,
             message:"subsection has updated successfully"
         })
     }
@@ -112,7 +123,7 @@ exports.deleteSubsection=async (req,res)=>{
     try{
         // step 1 : fetch the id of the subsection to be deleted
         const {subsectionId, sectionId}=req.body
-        
+        console.log(subsectionId,sectionId)
         // step 2 : validate the input data
         if(!subsectionId || !sectionId){
             return res.status(401).json({
@@ -143,9 +154,13 @@ exports.deleteSubsection=async (req,res)=>{
         // // step 5 : delete the subsection from DB        
         await subsection.findByIdAndDelete(subsectionId)
 
-        // // step 6 : return response
+        // step 6 : find updated section data after deleting its subsection
+        const updatedSection=await section.findById(sectionId).populate("subsection")
+
+        // // step 7 : return response
         return res.status(200).json({
             success:true,
+            data:updatedSection,
             message:"Subsection has deleted successfully"
         })
     }

@@ -21,14 +21,16 @@ function Sidebar(){
     
     if( authLoading || profileLoading){
         return (
-            <div className="spinner"/>
+            <div className="grid h-[calc(100vh-3.5rem)] min-w-[220px] items-center border-r-[1px] border-r-richblack-700 bg-richblack-800">
+                <div className="spinner"></div>
+            </div>
         )
     }
 
 
     return (
-        <div>
-            <div className="flex min-w-[222px] flex-col border-r-[1px] border-r-richblack-700 h-[calc(100vh-3.5rem)] bg-richblue-800 py-10">
+        <>
+            <div className="flex h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10">
                 <div className="flex flex-col">
                     {
                         sidebarLinks.map( (link) => {
@@ -40,11 +42,11 @@ function Sidebar(){
                     }
                 </div> 
 
-                <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-600"/> 
+                <div className="mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-700" />
 
                 <div className="flex flex-col">
 
-                    <SidebarLink link={{name:"Settings" , path:"dashboard/settings"}} iconName="VscSettingsGear"/>
+                    <SidebarLink link={{name:"Settings" , path:"/dashboard/settings"}} iconName="VscSettingsGear"/>
                     
                     <button 
                         onClick={ () => {
@@ -58,7 +60,8 @@ function Sidebar(){
                                 })
                             }
                         }
-                        className="text-sm font-medium text-richblack-100"
+                        className="px-8 py-2 text-sm font-medium text-richblack-300"
+
                     >
                         <div className="flex items-center gap-x-2">
                             <VscSignOut className="text-lg"/>
@@ -70,7 +73,7 @@ function Sidebar(){
             </div>
 
             {confirmationModal && <ConfirmationModal modalData={confirmationModal}/>}
-        </div>
+        </>
     )
 }
 

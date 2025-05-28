@@ -1,5 +1,5 @@
 // Import models and packages
-
+const mailSender = require("../utils/mailSender");
 const OTP=require("../models/otp")
 const user=require("../models/user")
 const otpGenerator=require("otp-generator") // this package is used to generate OTPs.
@@ -247,27 +247,21 @@ exports.login=async (req,res)=>{
 exports.changePassword=async (req,res)=>{
    try{
         // step 1 : fetch data from body
-        const {oldPassword, newPassword, confirmNewPassword}=req.body;
+        const {oldPassword, newPassword}=req.body;
+        console.log("The old password is   "+oldPassword  )
+        console.log("The new password is   "+newPassword)
         const User=await user.findById(req.user.id);
-
         // step 2 : validate the input data
-        if(!oldPassword || !newPassword || !confirmNewPassword){
+        if(!oldPassword || !newPassword ){
             return res.status(403).json({
                 success:false,
                 message:"All fields are required"
             })
         }
-
-        if(! await bcrypt.compare(oldPassword,User.password)){
+        if(! await bcrypt.compare(oldPassword,User.password)){  // here the format should be bcrypt.compare(plainTextPassword,hashedPassword)
             return res.status(400).json({
                 success:false,
                 message:"Please enter the correct Password"
-            })
-        }
-        if(newPassword!==confirmNewPassword){
-            return res.status(400).json({
-                success:false,
-                message:"newPassword and confirmNewPassword Not matched"
             })
         }
         
@@ -279,9 +273,10 @@ exports.changePassword=async (req,res)=>{
         try{
 			const emailResponse = await mailSender(
 				updatedUserDetails.email,
+                `Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`,
 				passwordUpdated(
 					updatedUserDetails.email,
-					`Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+					`${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
 				)
 			);
 			console.log("Email sent successfully:", emailResponse.response);

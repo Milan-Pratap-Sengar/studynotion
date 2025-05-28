@@ -10,16 +10,21 @@ function DashboardPage(){
 
     if( authLoading || profileLoading){
         return (
-            <div className="spinner"/>
-        )
+            <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
+              <div className="spinner"></div>
+            </div>
+          )
     }
 
     return (
-        <div className="relative flex min-h-[calc(100vh-3.5 rem)]">
+        <div className="relative flex min-h-[calc(100vh-3.5rem)]">
             <Sidebar/>
-            <div className="h-[calc(100vh-3.5rem)] overflow-auto">
+            <div className="h-[calc(100vh-3.5rem)] flex-1 overflow-auto">
                 <div className="mx-auto w-11/12 max-w-[1000px] py-10">
-                    <Outlet/>
+                    {/* Outlet is a special component in React Router DOM that acts as a placeholder for rendering child routes inside a parent route."
+                        Imagine you have a parent route called /dashboard and inside it, you want nested routes like /dashboard/profile and /dashboard/settings. Outlet is used in the parent to display these child components.
+                    */}
+                    <Outlet/> 
                 </div>
             </div>
         </div>

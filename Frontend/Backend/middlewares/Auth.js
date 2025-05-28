@@ -3,10 +3,14 @@ require("dotenv").config()
 
 // middleware for Authentication
 
+
+// NOTE : It is very important to add one space after Bearer in .replace() otherwise it will give you null
+
 exports.authMiddleware=async(req,res,next)=>{
     try{
         // step 1 : extract token from either cookie,body or header
-        const token=req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer","");
+        const token = req.cookies.token || req.body.token || req.header("Authorization").replace("Bearer ", "");
+        console.log("The token is this",token)
         if(!token){
             return res.status(401).json({
                 success: false,
@@ -15,6 +19,7 @@ exports.authMiddleware=async(req,res,next)=>{
         }
 
         // step 2 : verify the token with jwt secret key
+        
         try{
             const decode=jwt.verify(token,process.env.JWT_SECRET);
             console.log("The decoded token is:-",decode)

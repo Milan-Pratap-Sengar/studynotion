@@ -3,7 +3,7 @@ const router=express.Router()
 
 // import course controllers
 
-const {createCourse, showAllCourses, getCourseDetails}=require("../controllers/course")
+const {createCourse, showAllCourses, getCourseDetails,getFullCourseDetails,deleteCourse,editCourse,getInstructorCourses}=require("../controllers/course")
 const {createCategory, showAllCategories, categoryPageDetails}=require("../controllers/category")
 const {createSection, updateSection, deleteSection}=require("../controllers/section")
 const {createSubsection, updateSubsection, deleteSubsection}=require("../controllers/subsection")
@@ -21,6 +21,10 @@ const {authMiddleware, isStudentMiddleware, isInstructorMiddleware, isAdminMiddl
 router.post("/createCourse",authMiddleware,isInstructorMiddleware,createCourse)
 router.get("/getAllCourses",showAllCourses)
 router.get("/getCourseDetails",getCourseDetails)
+router.post("/getFullCourseDetails", authMiddleware, getFullCourseDetails)
+router.delete("/deleteCourse", deleteCourse)
+router.post("/editCourse", authMiddleware, isInstructorMiddleware, editCourse)
+router.get("/getInstructorCourses", authMiddleware, isInstructorMiddleware, getInstructorCourses)
 
 // section handler routes
 router.post("/addSection",authMiddleware,isInstructorMiddleware,createSection)
@@ -38,6 +42,7 @@ router.post("/getCategoryPageDetails",categoryPageDetails)
 router.post("/createRating",authMiddleware,isStudentMiddleware,createRating)
 router.get("/getAverageRating",getAverageRating)
 router.get("/getReviews",getAllRatings)
+
 
 
 module.exports=router;

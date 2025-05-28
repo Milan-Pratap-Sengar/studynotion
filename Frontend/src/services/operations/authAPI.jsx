@@ -48,6 +48,7 @@ export function sendOtp(email, navigate) {
 
 
 export function signUp(accountType, firstName, lastName, email, password, confirmPassword, otp, navigate ) {
+    console.log("The data is ",accountType, firstName, lastName, email, password, confirmPassword, otp);
     return async (dispatch) => {
         const toastId = toast.loading("Loading...")
         dispatch(setLoading(true))
