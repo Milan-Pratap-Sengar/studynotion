@@ -16,12 +16,9 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(
     cors({
-        origin: [
-                    'http://localhost:3000',
-                    'https://studynotion-frontend-lilac-chi.vercel.app'
-                ],
-        credentials:true
-    })
+		origin: "*",
+		credentials: true,
+	})
 )
 app.use(
     fileUpload({
