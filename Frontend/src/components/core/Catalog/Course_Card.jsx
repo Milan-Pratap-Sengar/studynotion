@@ -16,7 +16,7 @@ export default function Course_Card({course,height}){
 
     return(
         <div>
-            <NavLink to={`course/${course._id}`}>
+            <NavLink to={`/courses/${course._id}`}>
                 <div>
                     <div className="rounded-lg">
                         <img src={course?.thumbnail} alt="thumbnail" className={`${height} w-full rounded-xl object-cover `}/>

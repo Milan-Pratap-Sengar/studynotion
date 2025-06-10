@@ -8,6 +8,7 @@ const {createCategory, showAllCategories, categoryPageDetails}=require("../contr
 const {createSection, updateSection, deleteSection}=require("../controllers/section")
 const {createSubsection, updateSubsection, deleteSubsection}=require("../controllers/subsection")
 const {createRating, getAverageRating, getAllRatings}=require("../controllers/ratingAndReview")
+const {updateCourseProgress}=require("../controllers/courseProgress")
 
 // import the middlewares
 
@@ -20,7 +21,7 @@ const {authMiddleware, isStudentMiddleware, isInstructorMiddleware, isAdminMiddl
 // course handler routes
 router.post("/createCourse",authMiddleware,isInstructorMiddleware,createCourse)
 router.get("/getAllCourses",showAllCourses)
-router.get("/getCourseDetails",getCourseDetails)
+router.post("/getCourseDetails",getCourseDetails)
 router.post("/getFullCourseDetails", authMiddleware, getFullCourseDetails)
 router.delete("/deleteCourse", deleteCourse)
 router.post("/editCourse", authMiddleware, isInstructorMiddleware, editCourse)
@@ -43,6 +44,7 @@ router.post("/createRating",authMiddleware,isStudentMiddleware,createRating)
 router.get("/getAverageRating",getAverageRating)
 router.get("/getReviews",getAllRatings)
 
-
+// courseProgress routes
+router.post("/updateCourseProgress",authMiddleware,isStudentMiddleware,updateCourseProgress)
 
 module.exports=router;

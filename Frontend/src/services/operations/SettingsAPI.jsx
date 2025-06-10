@@ -14,6 +14,9 @@ const { UPDATE_DISPLAY_PICTURE_API, UPDATE_PROFILE_API, CHANGE_PASSWORD_API, DEL
 export function updateDisplayPicture(token, formData) {
     return async (dispatch) => {
         const toastId = toast.loading("Loading...")
+        formData.forEach((data)=>{
+            console.log("display picture",data)
+        })
         try {
             const response = await apiConnector("PUT",UPDATE_DISPLAY_PICTURE_API,formData,{"Content-Type": "multipart/form-data",Authorization: `Bearer ${token}`} )
             console.log("UPDATE_DISPLAY_PICTURE_API API RESPONSE............", response )
@@ -21,8 +24,11 @@ export function updateDisplayPicture(token, formData) {
             if (!response.data.success) {
                 throw new Error(response.data.message)
             }
+            const userImage = response.data.data.image ? response.data.data.image : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.updatedUserDetails.firstName} ${response.data.updatedUserDetails.lastName}`
+            console.log(userImage)
+            dispatch( setUser({ ...response.data.data, image: userImage }) )
             toast.success("Display Picture Updated Successfully")
-            dispatch(setUser(response.data.data))
+
         }
         catch (error) {
             console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", error)
@@ -43,7 +49,12 @@ export function updateProfile(token, formData) {
                 throw new Error(response.data.message)
             }
             const userImage = response.data.updatedUserDetails.image ? response.data.updatedUserDetails.image : `https://api.dicebear.com/5.x/initials/svg?seed=${response.data.updatedUserDetails.firstName} ${response.data.updatedUserDetails.lastName}`
-            dispatch( setUser({ ...response.data.updatedUserDetails, image: userImage }) )
+            const about=response.data.updatedUserDetails.additionalDetails.about
+            const dob=response.data.updatedUserDetails.additionalDetails.dateOfBirth
+            const contact=response.data.updatedUserDetails.additionalDetails.contactNumber
+            const gender=response.data.updatedUserDetails.additionalDetails.gender
+            // console.log(about,dob,contact,gender)
+            dispatch( setUser({ ...response.data.updatedUserDetails, image:userImage}) )
             toast.success("Profile Updated Successfully")
         }
         catch (error) {

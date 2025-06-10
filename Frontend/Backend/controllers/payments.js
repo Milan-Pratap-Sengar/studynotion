@@ -6,6 +6,7 @@ const {courseEnrollmentEmail}=require("../mail/templates/courseEnrollmentEmail")
 const { default: mongoose, setDriver } = require("mongoose")
 const { paymentSuccessEmail } = require("../mail/templates/paymentSuccessEmail")
 const crypto = require("crypto");
+const courseProgess = require("../models/courseProgess")
 
 // You need to follow the razorpay documentation because multiple things are based on documentation in both frontend and backend
 
@@ -122,8 +123,18 @@ const enrollStudentInCourses=async(courses,userId,res)=>{
                 })
             }
 
+
+            //  create courseProgess of the enrolled course
+            const courseProgress=await courseProgess.create({
+                courseID:course_id,
+                userId:userId,
+                completedVideos:[],
+            })
+
+
+
             //find the student and add the course to their list of enrolledCOurses
-            const enrolledStudent =await user.findByIdAndUpdate(userId,{$push:{courses:course_id}},{new:true})
+            const enrolledStudent =await user.findByIdAndUpdate(userId,{$push:{courses:course_id,courseProgess:courseProgress._id}},{new:true})
 
             // now send the confirmation mail to the student
             const emailResponse=await mailSender(
@@ -144,6 +155,9 @@ const enrollStudentInCourses=async(courses,userId,res)=>{
 }
 
 
+// ***************************************************************************************************************************************************
+//                                                                  verifySignature
+// ***************************************************************************************************************************************************
 
 exports.verifySignature=async (req,res)=>{
     try{

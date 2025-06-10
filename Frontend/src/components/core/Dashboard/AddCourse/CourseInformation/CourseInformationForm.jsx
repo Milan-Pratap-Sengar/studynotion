@@ -46,6 +46,7 @@ export default function CourseInformationForm(){
             setValue("courseCategory", course.categoryId);
             setValue("courseRequirements", course.instructions);
             setValue("courseImage", course.thumbnail);
+            // setValue("")
         }
     },[])
 
@@ -128,9 +129,6 @@ export default function CourseInformationForm(){
             else {
                 toast.error("NO Changes made so far");
             }
-            console.log("PRINTING FORMDATA", formData);
-            console.log("PRINTING result", result);
-
             return;
         }
 

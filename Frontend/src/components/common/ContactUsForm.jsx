@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { useDispatch } from "react-redux";
-import { ContactUS } from "../../services/operations/ContactUsAPI";
 import CountryCode from "../../data/countrycode.json"
+import { apiConnector } from "../../services/apiConnector";
+import { contactusEndpoint } from "../../services/apis";
+import toast from "react-hot-toast";
 
 
 
@@ -41,16 +43,28 @@ function ContactUsForm(){
                 {
                     email:"",
                     firstname:"",
-                    lastname:"",
+                    lastName:"",
                     message:"",
-                    phoneNo:""
+                    phoneNo:"",
+                    countrycode:"",
                 }
             )
         }
     },[reset, isSubmitSuccessful])
 
-    function submitContactForm( data){
-        dispatch(ContactUS(data,setLoading))
+    const submitContactForm=async(data)=>{
+        const toastId=toast.loading("Loading...")
+         try {
+            console.log("The contact us form data is ",data)
+            const res = await apiConnector("POST" , contactusEndpoint.CONTACT_US_API , data)
+            console.log("CONTACT US SUCCESSFUL API.....",res)
+            toast.success("Email send Successfully")
+        } 
+        catch (error) {
+            console.log("CONTACT US ERROR API....... ", error)
+            toast.error("Could not send Email")
+        }
+        toast.dismiss(toastId)
     }
 
     return (

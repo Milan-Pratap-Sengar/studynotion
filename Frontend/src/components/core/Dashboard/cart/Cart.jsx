@@ -4,7 +4,7 @@ import CartCourses from "./CartCourses"
 
 export default function Cart(){
 
-    const {total,totalItems}=useSelector((state)=>state.auth)
+    const {total,totalItems}=useSelector((state)=>state.cart)
 
 
     return(

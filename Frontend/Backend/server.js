@@ -31,11 +31,13 @@ const userRoute=require("./routes/user")
 const profileRoute=require("./routes/profile")
 const paymentRoute=require("./routes/payments")
 const courseRoute=require("./routes/course")
+const contactUsRoute=require("./routes/contactUs")
 
 app.use("/api/v1/auth",userRoute)
 app.use("/api/v1/profile",profileRoute)
 app.use("/api/v1/payment",paymentRoute)
 app.use("/api/v1/course",courseRoute)
+app.use("/api/v1/reach",contactUsRoute)
 
 
 

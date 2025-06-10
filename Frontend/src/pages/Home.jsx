@@ -9,6 +9,7 @@ import LanguageLearningSection from "../components/core/homepage/LanguageLearnin
 import InstructorSection from "../components/core/homepage/InstructorSection";
 import ExploreMore from "../components/core/homepage/ExploreMore";
 import Footer from "../components/common/Footer";
+import ReviewSlider from "../components/common/reviewSlider";
 
 
 
@@ -209,8 +210,8 @@ function Home(){
 
             <div className="w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 bg-richblack-900 text-white">
                     <InstructorSection/>
-                    {/* <h2 className='text-center text-4xl font-semobold mt-10'>review from Other Learners</h2> */}
-                    {/* Review Slider here */}
+                    <h2 className='text-center text-4xl font-semibold mt-10'>Review from Other Learners</h2>
+                    <ReviewSlider/>
             </div>
 
 

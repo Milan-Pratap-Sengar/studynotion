@@ -37,7 +37,6 @@ function ChangeProfilePicture(){
 
     const handleFileUpload = () => {
         try {
-            console.log("uploading...")
             setLoading(true)
             const formData = new FormData()
             formData.append("displayPicture", imageFile)
@@ -46,7 +45,7 @@ function ChangeProfilePicture(){
             })
         } 
         catch (error) {
-            console.log("ERROR MESSAGE - ", error.message)
+            console.log("ERROR MESSAGE - ", error)
         }
     }
 
@@ -67,7 +66,7 @@ function ChangeProfilePicture(){
                         <div className="flex flex-row gap-3">
                             <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/png, image/gif, image/jpeg" />
                             <button onClick={handleClick} disabled={loading} className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50" > Select </button>
-                            <IconBtn text={loading ? "Uploading..." : "Upload"} onclick={handleFileUpload} >
+                            <IconBtn text={loading ? "Uploading..." : "Upload"} onClick={handleFileUpload} >
                                 {
                                     !loading && (
                                         <FiUpload className="text-lg text-richblack-900" />

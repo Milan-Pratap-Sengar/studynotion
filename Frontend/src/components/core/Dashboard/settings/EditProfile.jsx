@@ -12,6 +12,10 @@ function EditProfile(){
     const navigate = useNavigate()
     const dispatch = useDispatch()
 
+    console.log(user)
+
+    const {about,dateOfBirth}=user.additionalDetails
+    console.log(about,dateOfBirth)
     const {register, handleSubmit, formState: { errors }, } = useForm()
 
     const submitProfileForm = async (data) => {

@@ -1,7 +1,10 @@
+const course = require("../models/course")
+const { populate } = require("../models/course")
 const profile=require("../models/profile")
 const user=require("../models/user")
 const {uploadImageToCloudinary}=require("../utils/imageUploader")
 require("dotenv").config()
+const { convertSecondsToDuration } = require("../utils/secToDuration")
 // **********************************************************************************************************************************************************************
 //                                                      update profile controller
 // **********************************************************************************************************************************************************************
@@ -24,22 +27,26 @@ exports.updateProfile=async (req, res)=>{
         }
 
         // step 3 : find profile
-        const userDetails=await user.findById(id)
+        const userDetails=await user.findById(id).populate("additionalDetails").exec()
+        console.log("user details are ",userDetails)
         const profileId=userDetails.additionalDetails;
+        console.log("profile ID are ",profileId)
         const profileDetails=await profile.findById(profileId)
-
+        console.log("profile details are ",profileDetails)
         // step 4 : update profile
         profileDetails.dateOfBirth=dateOfBirth
         profileDetails.about=about
         profileDetails.contactNumber=contactNumber
         profileDetails.gender=gender
+
+        console.log("The profile details are",profileDetails)
         
         await profileDetails.save();
 
         // step 5 : return response
         return res.status(200).json({
             success:true,
-            profileDetails,
+            updatedUserDetails:userDetails,
             message:"Profile updated successfully"
         })
     }
@@ -138,7 +145,7 @@ exports.getUserDetails=async(req,res)=>{
 
 exports.updateDisplayPicture = async (req, res) => {
     try {
-        console.log("helloworld")
+        console.log("helloworld",req.files)
         // step 1 : fetch the user id of which picture is to be updated and the new display picture
         const displayPicture = req.files.displayPicture
         console.log("Display Picture is:-",displayPicture)
@@ -147,7 +154,7 @@ exports.updateDisplayPicture = async (req, res) => {
         console.log("userId is:-",userId)
         // step 2 : upload the image to the cloudinary
         const image = await uploadImageToCloudinary(displayPicture, process.env.FOLDER_NAME, 1000, 1000)
-        console.log("The image is:-",image)
+        console.log("The profile picture is:-",image)
 
         // step 3 : now, fetch the user and update the profile picture(i.e update profile link) in the database
         const updatedProfile = await user.findByIdAndUpdate({ _id: userId },{ image: image.secure_url },{ new: true })
@@ -182,7 +189,22 @@ exports.getEnrolledCourses = async (req, res) => {
         const userId = req.user.id
 
         // step 2 : fetch all the enrolled courses of this user from database
-        const userDetails = await user.findOne({ _id: userId,}).populate("courses").exec()
+        const userDetails = await user.findOne({ _id: userId,}).populate({
+                                                    path:"courses",
+                                                    populate:[
+                                                        {
+                                                            path:"courseContent",
+                                                            populate:{
+                                                                path:"subsection"
+                                                            },
+                                                        },
+                                                        {
+                                                            path:"instructor"
+                                                        }
+                                                    ]
+                                                    
+                                                })
+        
         
         // step 3 : validate the user details
         if (!userDetails) {
@@ -192,17 +214,79 @@ exports.getEnrolledCourses = async (req, res) => {
             })
         }
 
+        // calculate the durations of the enrolled courses
+        const durationsArray=[]
+        userDetails.courses.forEach((course)=>{
+            let totalDurationInSeconds = 0
+            course.courseContent.forEach((section)=>{
+                section.subsection.forEach((subsection)=>{
+                    const timeDurationInSeconds = parseInt(subsection.timeDuration)
+                    totalDurationInSeconds += timeDurationInSeconds
+                })
+            })
+            const totalDuration = convertSecondsToDuration(totalDurationInSeconds)
+            durationsArray.push(totalDuration)
+        })
+
+
+        const userCourses=userDetails.courses
+
         // step 4 : send response
         return res.status(200).json({
             success: true,
-            data: userDetails.courses,
+            data: {
+                userCourses,
+                durationsArray
+            }
         })
     } 
     catch (error) {
         return res.status(500).json({
             success: false,
             message: error.message,
-            message: `Something went wrong while fetching all enrolled courses`
+            output: `Something went wrong while fetching all enrolled courses`
         })
     }
 };
+
+
+
+
+// **********************************************************************************************************************************************************************
+//                                                           controller
+// **********************************************************************************************************************************************************************
+
+exports.instructorDashboard=async (req,res)=>{
+    try{
+
+        // fetch all the courses of an instructor
+        const courseDetails=await course.find({instructor:req.user.id})
+        
+        const courseData=courseDetails.map((course)=>{
+            const totalStudentsEnrolled= course.studentsEnrolled.length
+            const totalAmountGenerated=totalStudentsEnrolled*course.price
+
+            // create a new object to store and return all the required data
+            const courseDataWithStats={
+                _id:course._id,
+                courseName:course.courseName,
+                courseDescription:course.courseDescription,
+                totalStudentsEnrolled,
+                totalAmountGenerated
+            }
+            return courseDataWithStats
+        })
+        res.status(200).json({
+            success:true,
+            courses:courseData
+        })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({
+            success:false,
+            error:err.message,
+            message:"Something went wrong while fetching instructor dashboard details"
+        })
+    }
+}
